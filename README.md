@@ -12,6 +12,7 @@ Eine einfache, strukturierte LaTeX-Vorlage für wissenschaftliche Labor-Protokol
 
 2. **Setup-Script ausführen:**
    ```bash
+   chmod +x ./self_removing_setup_helper.sh
    ./self_removing_setup_helper.sh
    ```
    Das Script führt dich interaktiv durch alle notwendigen Eingaben und ersetzt die Platzhalter in `main.tex`.
