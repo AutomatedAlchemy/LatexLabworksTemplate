@@ -24,7 +24,7 @@ ALL_REPLACED=true  # Track if all placeholders were replaced successfully
 
 # Cache configuration
 CACHE_DIR="$HOME/.cache/latex-labworks-template"
-CACHE_FILE="$CACHE_DIR/last_values.cache"
+CACHE_FILE="$CACHE_DIR/last_values.txt"
 
 # =============================================================================
 # Helper Functions

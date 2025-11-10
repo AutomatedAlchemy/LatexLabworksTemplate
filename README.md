@@ -82,7 +82,7 @@ Die Vorlage kann natürlich nach deinen Bedürfnissen angepasst werden:
 
 ### Intelligente Wertspeicherung
 
-Das Setup-Script speichert deine Eingaben in `~/.cache/latex-labworks-template/last_values.cache`.
+Das Setup-Script speichert deine Eingaben in `~/.cache/latex-labworks-template/last_values.txt`.
 
 **Vorteile:**
 - Bei mehreren Protokollen im gleichen Kurs musst du wiederkehrende Werte (Kurs, Studiengang, Hochschule, Autoren, etc.) nicht erneut eingeben
@@ -95,7 +95,7 @@ Das Abgabedatum wird automatisch als **2 Wochen nach dem Versuchsdatum** berechn
 
 **Cache löschen (optional):**
 ```bash
-rm ~/.cache/latex-labworks-template/last_values.cache
+rm ~/.cache/latex-labworks-template/last_values.txt
 ```
 
 ## Tipps
