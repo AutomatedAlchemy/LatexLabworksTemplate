@@ -1,0 +1,287 @@
+% =============================================================================
+% ==     ALLGEMEINE VORLAGE FÜR WISSENSCHAFTLICHE PROTOKOLLE                 ==
+% =============================================================================
+
+\documentclass[a4paper,12pt,ngerman]{article}
+
+% =============================================================================
+% == METADATEN DES DOKUMENTS (HIER FÜR NEUEN VERSUCH ANPASSEN)               ==
+% =============================================================================
+
+% --- Allgemeine Informationen ---
+\newcommand{\Titel}{[Titel des Versuchs]}
+\newcommand{\Untertitel}{Versuchsprotokoll}
+\newcommand{\Kurs}{[Name des Kurses oder Praktikums]}
+\newcommand{\Studiengang}{[Ihr Studiengang]}
+\newcommand{\Hochschule}{[Name der Hochschule und Fakultät]}
+
+% --- Autoren ---
+\newcommand{\Autoren}{[Name 1], [Name 2], [Name 3]}
+
+% --- Termine und Betreuung ---
+\newcommand{\Versuchsdatum}{TT. Monat JJJJ}
+\newcommand{\Abgabedatum}{TT. Monat JJJJ}
+\newcommand{\Betreuer}{[Name des Betreuers]}
+
+% --- PDF-Metadaten ---
+\newcommand{\Stichworte}{Versuchsprotokoll, Praktikum, [Stichwort 1], [Stichwort 2]}
+
+
+% =============================================================================
+% == PAKETE UND EINSTELLUNGEN (Normalerweise keine Änderung nötig)           ==
+% =============================================================================
+
+% -----------------------------------------------------------------------------
+% -- Sprach- und Zeichenkodierung
+% -----------------------------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{csquotes}
+
+% -----------------------------------------------------------------------------
+% -- Schriftart und Seitenlayout
+% -----------------------------------------------------------------------------
+\usepackage{lmodern}
+\usepackage[a4paper, top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1.5ex}
+
+% -----------------------------------------------------------------------------
+% -- Typografie
+% -----------------------------------------------------------------------------
+\usepackage{microtype}
+
+% -----------------------------------------------------------------------------
+% -- Tabellen
+% -----------------------------------------------------------------------------
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{placeins}
+\usepackage{makecell}
+\renewcommand\cellalign{tl}
+\renewcommand{\arraystretch}{1.3}
+
+% -----------------------------------------------------------------------------
+% -- Mathematik, Physik, Chemie und Einheiten
+% -----------------------------------------------------------------------------
+\usepackage{amsmath}
+\usepackage{physics}
+\usepackage[version=4]{mhchem}
+\usepackage{siunitx}
+\sisetup{
+  locale = DE,
+  detect-all,
+  round-mode = places,
+  round-precision = 2
+}
+
+% -----------------------------------------------------------------------------
+% -- Abbildungen und Gleitobjekte
+% -----------------------------------------------------------------------------
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\captionsetup{font=small, labelfont=bf, singlelinecheck=false, format=hang}
+\addto\captionsngerman{\renewcommand{\figurename}{Abb.}}
+\addto\captionsngerman{\renewcommand{\tablename}{Tab.}}
+\graphicspath{{Abbildungen/}}
+
+% -----------------------------------------------------------------------------
+% -- Hyperlinks und PDF-Erstellung
+% -----------------------------------------------------------------------------
+\usepackage{hyperref}
+\hypersetup{
+  pdftitle={\Titel},
+  pdfauthor={\Autoren},
+  pdfsubject={\Untertitel},
+  pdfkeywords={\Stichworte},
+  colorlinks=true,
+  linkcolor=black,
+  citecolor=blue,
+  urlcolor=blue,
+  breaklinks=true,
+  hidelinks
+}
+
+% -----------------------------------------------------------------------------
+% -- Abkürzungsverzeichnis
+% -----------------------------------------------------------------------------
+\usepackage{acro}
+%
+% Fügen Sie hier Ihre eigenen Akronyme nach dem folgenden Schema hinzu:
+% \DeclareAcronym{<label>}{ short = <Kurzform>, long = <Langform> }
+% Beispiel:
+% \DeclareAcronym{fau}{ short = FAU, long = Friedrich-Alexander-Universität }
+%
+
+% -----------------------------------------------------------------------------
+% -- Literaturverzeichnis mit BibLaTeX
+% -----------------------------------------------------------------------------
+\usepackage[
+  backend=biber,
+  style=numeric,
+  sorting=none,
+  natbib=true
+]{biblatex}
+\addbibresource{quellen.bib} % Name der .bib-Datei
+
+
+% =============================================================================
+% ==                          DOKUMENTBEGINN                                 ==
+% =============================================================================
+\begin{document}
+
+% -----------------------------------------------------------------------------
+% -- Deckblatt
+% -----------------------------------------------------------------------------
+\begin{titlepage}
+  \begin{flushleft}
+    % Fügen Sie hier bei Bedarf ein Logo ein, z.B.:
+    % \includegraphics[width=8cm]{logo.png}
+  \end{flushleft}
+
+  \vspace{2cm}
+
+  \begin{center}
+    {\large\bfseries \Kurs\par}
+    \vspace{1.5cm}
+    {\huge\bfseries \Titel\par}
+    \vspace{2cm}
+    {\Large\bfseries \Untertitel\par}
+
+    \vspace{1cm}
+
+    {\normalsize
+    An der\\
+    \Hochschule
+    }
+    
+    \vspace{1cm}
+    
+    {\normalsize \Studiengang\\}
+
+    \vspace{2cm}
+
+    {\normalsize vorgelegt von\\
+    \vspace{0.5cm}
+    {\large \Autoren}\\
+    }
+
+    \vfill % Schiebt den unteren Teil an das Seitenende
+
+    {\normalsize
+    Versuchsdurchführung: \Versuchsdatum\\
+    Abgabedatum: \Abgabedatum
+    }
+    
+    \vspace{1cm}
+    
+    {\normalsize Versuchsbetreuer: \Betreuer}
+  \end{center}
+\end{titlepage}
+\pagenumbering{gobble}
+
+% -----------------------------------------------------------------------------
+% -- Verzeichnisse
+% -----------------------------------------------------------------------------
+\newpage
+\cleardoublepage
+\pagenumbering{Roman}
+\tableofcontents
+\thispagestyle{plain}
+
+\newpage
+\listoffigures
+\addcontentsline{toc}{section}{Abbildungsverzeichnis}
+\vspace{2em}
+\listoftables
+\addcontentsline{toc}{section}{Tabellenverzeichnis}
+
+\newpage
+\printacronyms[name=Abkürzungsverzeichnis]
+\addcontentsline{toc}{section}{Abkürzungsverzeichnis}
+\clearpage
+\pagenumbering{arabic}
+
+% =============================================================================
+% ==                         HAUPTTEIL DES PROTOKOLLS                        ==
+% =============================================================================
+\section{Einleitung}
+%
+% Fügen Sie hier Ihren Einleitungstext ein.
+% Leiten Sie das Thema des Versuchs her.
+% Erklären Sie die Motivation und die Relevanz des Themas.
+% Formulieren Sie die genaue Zielsetzung bzw. die Forschungsfrage des Versuchs.
+%
+
+\clearpage
+\section{Grundlagen}
+%
+% Fügen Sie hier die theoretischen Grundlagen ein.
+% Erläutern Sie die physikalischen, chemischen oder technischen Prinzipien,
+% die für das Verständnis des Versuchs notwendig sind.
+% Leiten Sie relevante Formeln her und erklären Sie die darin vorkommenden Größen.
+% Jede nicht-triviale Aussage sollte mit einer Quelle belegt werden, z.B. \cite{IhreQuelle}.
+%
+
+\clearpage
+\section{Durchführung}
+%
+% Beschreiben Sie hier den Versuchsaufbau und den Ablauf.
+% Schreiben Sie im Präteritum und in einer sachlichen, unpersönlichen Form.
+% Nennen Sie alle verwendeten Geräte, Materialien und Chemikalien.
+% Beschreiben Sie die durchgeführten Schritte so präzise, dass der Versuch
+% von einer anderen Person reproduziert werden könnte.
+%
+
+\clearpage
+\section{Ergebnisse und Diskussion}
+%
+% Präsentieren und diskutieren Sie hier Ihre Messergebnisse.
+%
+% 1. Präsentation der Ergebnisse:
+%    - Stellen Sie Ihre Daten übersichtlich in Form von Diagrammen, Abbildungen
+%      oder Tabellen dar.
+%    - Jede Abbildung und Tabelle benötigt eine nummerierte Beschriftung.
+%    - Beschreiben Sie objektiv, was in den Daten zu sehen ist.
+%
+% 2. Diskussion der Ergebnisse:
+%    - Interpretieren Sie Ihre Beobachtungen.
+%    - Setzen Sie die Ergebnisse in den Kontext der theoretischen Grundlagen.
+%    - Vergleichen Sie Ihre Ergebnisse mit Literaturwerten, falls vorhanden.
+%    - Diskutieren Sie mögliche Fehlerquellen, Messunsicherheiten und deren
+%      Einfluss auf die Ergebnisse.
+%
+
+\clearpage
+\section{Zusammenfassung}
+%
+% Fassen Sie die wichtigsten Ergebnisse und Schlussfolgerungen des Versuchs
+% kurz und prägnant zusammen.
+% Beantworten Sie die in der Einleitung formulierte Zielsetzung.
+% Geben Sie gegebenenfalls einen kurzen Ausblick.
+%
+
+% =============================================================================
+% ==                ABSCHLUSS: QUELLENVERZEICHNIS & ANHANG                   ==
+% =============================================================================
+\clearpage
+\printbibliography[heading=bibintoc, title={Quellenverzeichnis}]
+
+\clearpage
+\appendix
+\section{Anhang}
+\label{sec:Anhang}
+%
+% Fügen Sie hier bei Bedarf zusätzliches Material ein, z.B.:
+% - Rohdatentabellen
+% - Zusätzliche Diagramme oder Abbildungen
+% - Detaillierte Berechnungen
+% - Sicherheitshinweise
+%
+
+\end{document}
