@@ -17,7 +17,11 @@ Eine einfache, strukturierte LaTeX-Vorlage für wissenschaftliche Labor-Protokol
    ```
    Das Script führt dich interaktiv durch alle notwendigen Eingaben und ersetzt die Platzhalter in `main.tex`.
 
-3. **Dokument kompilieren:**
+3. **Dokument bearbeiten und kompilieren:**
+
+   **Einfacher:** Nutze [Overleaf](https://www.overleaf.com) für einfaches Hosting mit deinem Uni-Login und für gemeinsame asynchrone und synchrone Zusammenarbeit.
+
+   **Lokal:** Für vollständige lokale Verwaltung:
    ```bash
    pdflatex main.tex
    biber main
@@ -43,6 +47,7 @@ Eine einfache, strukturierte LaTeX-Vorlage für wissenschaftliche Labor-Protokol
 - **self_removing_setup_helper.sh** - Interaktives Setup-Script
   - Ersetzt alle Platzhalter (Titel, Autoren, Daten, etc.)
   - Erstellt automatisch ein Backup
+  - Speichert deine Eingaben für zukünftige Protokolle
   - Löscht sich selbst nach erfolgreicher Einrichtung
 
 ## Anforderungen
@@ -73,12 +78,33 @@ Die Vorlage kann natürlich nach deinen Bedürfnissen angepasst werden:
 - Struktur anpassen (Kapitel hinzufügen/entfernen)
 - Layout-Einstellungen ändern (Seitenränder, Schriftart, etc.)
 
+## Features
+
+### Intelligente Wertspeicherung
+
+Das Setup-Script speichert deine Eingaben in `~/.cache/latex-labworks-template/last_values.cache`.
+
+**Vorteile:**
+- Bei mehreren Protokollen im gleichen Kurs musst du wiederkehrende Werte (Kurs, Studiengang, Hochschule, Autoren, etc.) nicht erneut eingeben
+- Einfach Enter drücken, um den letzten Wert zu übernehmen
+- Nur neue/geänderte Werte eingeben (z.B. Titel, Datum)
+
+### Automatische Datumsberechnung
+
+Das Abgabedatum wird automatisch als **2 Wochen nach dem Versuchsdatum** berechnet und vorgeschlagen. Du kannst den Vorschlag einfach mit Enter übernehmen oder ein anderes Datum eingeben.
+
+**Cache löschen (optional):**
+```bash
+rm ~/.cache/latex-labworks-template/last_values.cache
+```
+
 ## Tipps
 
 - Akronyme werden automatisch beim ersten Gebrauch ausgeschrieben
 - Abbildungen im Ordner `Abbildungen/` ablegen
 - Literatur in `quellen.bib` eintragen und mit `\cite{key}` referenzieren
 - Das Backup `main.tex.backup` kann gelöscht werden, sobald alles passt
+- Für mehrere Protokolle: Template einfach erneut klonen, Script nutzt gecachte Werte
 
 ## Lizenz
 
