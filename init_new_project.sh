@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # =============================================================================
-# Self-Removing Setup Helper for LaTeX Lab Protocol Template
+# Setup Helper for LaTeX Lab Protocol Template
 # =============================================================================
-# This script interactively replaces placeholders in main.tex and then
-# removes itself after completion (only if all placeholders were replaced).
-# Features caching of previous values for convenience.
+# This script creates a new project directory based on your course name,
+# copies the template files, and replaces all placeholders with your inputs.
+# Features caching of previous values for convenience across multiple projects.
 # =============================================================================
 
 set -e  # Exit on error
@@ -18,13 +18,12 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
-MAIN_TEX="main.tex"
+TEMPLATE_DIR="LatexProjectTemplate"
 SCRIPT_NAME="$(basename "$0")"
-ALL_REPLACED=true  # Track if all placeholders were replaced successfully
 
-# Cache configuration
-CACHE_DIR="$HOME/.cache/latex-labworks-template"
-CACHE_FILE="$CACHE_DIR/last_values.txt"
+# Cache configuration (stored in repository root)
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+CACHE_FILE="$SCRIPT_DIR/.LatexLabworksTemplate.cache"
 
 # =============================================================================
 # Helper Functions
@@ -122,9 +121,6 @@ save_to_cache() {
     local key="$1"
     local value="$2"
 
-    # Create cache directory if it doesn't exist
-    mkdir -p "$CACHE_DIR"
-
     # Create or update cache file
     if [ -f "$CACHE_FILE" ]; then
         # Remove old entry if exists, then append new one
@@ -170,11 +166,6 @@ ask_input() {
         save_to_cache "$cache_key" "$user_input"
     fi
 
-    # Check if value is non-empty
-    if [ -z "$user_input" ]; then
-        ALL_REPLACED=false
-    fi
-
     echo ""
 }
 
@@ -203,15 +194,10 @@ ask_input_with_default() {
 
     eval "$variable_name=\"$user_input\""
 
-    # Check if value is non-empty
-    if [ -z "$user_input" ]; then
-        ALL_REPLACED=false
-    fi
-
     echo ""
 }
 
-# Function to replace text in main.tex
+# Function to replace text in a file
 replace_in_file() {
     local search="$1"
     local replace="$2"
@@ -223,7 +209,6 @@ replace_in_file() {
 
     # Check if replacement value is empty
     if [ -z "$replace" ]; then
-        ALL_REPLACED=false
         return 1
     fi
 
@@ -231,20 +216,28 @@ replace_in_file() {
     return 0
 }
 
+# Sanitize project title to create a valid directory name
+sanitize_dirname() {
+    local input="$1"
+    # Only remove truly problematic characters: / \ : * ? " < > |
+    # Replace spaces with underscores
+    echo "$input" | sed 's/[\/\\:*?"<>|]//g' | sed 's/ /_/g'
+}
+
 # =============================================================================
 # Main Script
 # =============================================================================
 
-# Check if main.tex exists
-if [ ! -f "$MAIN_TEX" ]; then
-    print_error "Datei $MAIN_TEX nicht gefunden!"
+# Check if template directory exists
+if [ ! -d "$TEMPLATE_DIR" ]; then
+    print_error "Template-Verzeichnis $TEMPLATE_DIR nicht gefunden!"
     exit 1
 fi
 
 print_header
 
-echo -e "Willkommen! Dieses Script hilft dir, die Vorlage für dein Labor-Protokoll"
-echo -e "einzurichten. Du wirst nach verschiedenen Informationen gefragt."
+echo -e "Willkommen! Dieses Script erstellt ein neues Projekt-Verzeichnis für dein"
+echo -e "Labor-Protokoll und richtet alle Dateien mit deinen Angaben ein."
 echo ""
 if [ -f "$CACHE_FILE" ]; then
     echo -e "${YELLOW}Hinweis: Drück einfach Enter, um die letzten Werte zu übernehmen.${NC}"
@@ -252,68 +245,88 @@ else
     echo -e "${YELLOW}Hinweis: Deine Eingaben werden für zukünftige Protokolle gespeichert.${NC}"
 fi
 echo ""
-read -p "Drück Enter zum Fortfahren..." dummy
-echo ""
-
-# Create backup
-print_step "Erstelle Backup von $MAIN_TEX..."
-cp "$MAIN_TEX" "${MAIN_TEX}.backup"
-print_success "Backup erstellt: ${MAIN_TEX}.backup"
-echo ""
 
 # =============================================================================
 # Collect Information
 # =============================================================================
 
-print_step "Schritt 1/9: Titel des Versuchs"
+print_step "Schritt 1/8: Titel des Versuchs"
 ask_input "Wie lautet der Titel deines Versuchs?" "titel" TITEL
 
-print_step "Schritt 2/9: Kurs/Praktikum"
+print_step "Schritt 2/8: Kurs/Praktikum"
 ask_input "Name des Kurses oder Praktikums?" "kurs" KURS
 
-print_step "Schritt 3/9: Studiengang"
+# Create project directory based on course name
+PROJECT_DIR=$(sanitize_dirname "$KURS")
+if [ -z "$PROJECT_DIR" ]; then
+    PROJECT_DIR="NeuesProjekt"
+fi
+
+# Check if directory already exists
+if [ -d "$PROJECT_DIR" ]; then
+    print_error "Verzeichnis '$PROJECT_DIR' existiert bereits!"
+    read -p "Möchtest du einen anderen Namen verwenden? (y/n): " confirm
+    if [[ "$confirm" =~ ^[jJyY]$ ]]; then
+        read -p "Neuer Verzeichnisname: " PROJECT_DIR
+        while [ -d "$PROJECT_DIR" ] || [ -z "$PROJECT_DIR" ]; do
+            print_error "Ungültiger oder bereits existierender Name!"
+            read -p "Verzeichnisname: " PROJECT_DIR
+        done
+    else
+        print_error "Abbruch."
+        exit 1
+    fi
+fi
+
+echo ""
+print_info "Projekt-Verzeichnis wird sein: ${BOLD}$PROJECT_DIR${NC}"
+echo ""
+
+print_step "Schritt 3/8: Studiengang"
 ask_input "Dein Studiengang?" "studiengang" STUDIENGANG
 
-print_step "Schritt 4/9: Hochschule und Fakultät"
+print_step "Schritt 4/8: Hochschule und Fakultät"
 ask_input "Name der Hochschule und Fakultät?" "hochschule" HOCHSCHULE
 
-print_step "Schritt 5/9: Autoren"
+print_step "Schritt 5/8: Autoren"
 print_info "Gib die Namen aller Autoren ein (getrennt durch Komma)"
 ask_input "Autoren (z.B. Ezra Exam, Max Muster)?" "autoren" AUTOREN
 
-print_step "Schritt 6/9: Versuchsdatum"
+print_step "Schritt 6/8: Versuchsdatum"
 print_info "Format: dd.mm.yyyy (z.B. 10.11.2025)"
 ask_input "Datum der Versuchsdurchführung?" "versuchsdatum" VERSUCHSDATUM
 
-print_step "Schritt 7/9: Abgabedatum"
+print_step "Schritt 7/8: Abgabedatum"
 print_info "Format: dd.mm.yyyy (z.B. 24.11.2025)"
 SUGGESTED_ABGABEDATUM=$(add_14_days "$VERSUCHSDATUM")
 ask_input_with_default "Abgabedatum des Protokolls?" "$SUGGESTED_ABGABEDATUM" ABGABEDATUM
 
-print_step "Schritt 8/9: Betreuer"
+print_step "Schritt 8/8: Betreuer"
 ask_input "Name(n) der Versuchsbetreuer?" "betreuer" BETREUER
 
-print_step "Schritt 9/9: Stichwörter"
-print_info "Gib 2-3 spezifische Stichwörter für deinen Versuch ein"
-print_info "Diese werden für die PDF-Metadaten verwendet"
-ask_input "Stichwörter (z.B. Optik, Beugung)?" "stichworte" STICHWORTE
-
 # =============================================================================
-# Validate all inputs are non-empty
+# Create Project Directory and Copy Template
 # =============================================================================
 
-if [ -z "$TITEL" ] || [ -z "$KURS" ] || [ -z "$STUDIENGANG" ] || \
-   [ -z "$HOCHSCHULE" ] || [ -z "$AUTOREN" ] || [ -z "$VERSUCHSDATUM" ] || \
-   [ -z "$ABGABEDATUM" ] || [ -z "$BETREUER" ] || [ -z "$STICHWORTE" ]; then
-    ALL_REPLACED=false
-fi
+echo ""
+print_step "Erstelle Projekt-Verzeichnis: $PROJECT_DIR"
+mkdir -p "$PROJECT_DIR"
+print_success "Verzeichnis erstellt"
+
+echo ""
+print_step "Kopiere Template-Dateien..."
+cp -r "$TEMPLATE_DIR"/* "$PROJECT_DIR"/
+print_success "Template-Dateien kopiert"
+
+# The main.tex file is now in the project directory
+MAIN_TEX="$PROJECT_DIR/main.tex"
 
 # =============================================================================
 # Apply Replacements
 # =============================================================================
 
 echo ""
-print_step "Wende Änderungen auf $MAIN_TEX an..."
+print_step "Wende Änderungen auf main.tex an..."
 echo ""
 
 replace_in_file "[Titel des Versuchs]" "$TITEL" "$MAIN_TEX" && print_success "Titel ersetzt"
@@ -341,64 +354,29 @@ fi
 
 replace_in_file "[Name des Betreuers]" "$BETREUER" "$MAIN_TEX" && print_success "Betreuer ersetzt"
 
-replace_in_file "[Stichwort 1], [Stichwort 2]" "$STICHWORTE" "$MAIN_TEX" && print_success "Stichwörter ersetzt"
-
 # =============================================================================
 # Completion
 # =============================================================================
 
 echo ""
-if [ "$ALL_REPLACED" = true ]; then
-    echo -e "${GREEN}${BOLD}==========================================================================="
-    echo "  ✓ Setup erfolgreich abgeschlossen!"
-    echo "===========================================================================${NC}"
-else
-    echo -e "${YELLOW}${BOLD}==========================================================================="
-    echo "  ⚠ Setup mit Warnungen abgeschlossen!"
-    echo "===========================================================================${NC}"
-    print_warning "Einige Platzhalter wurden möglicherweise nicht vollständig ersetzt."
-fi
+echo -e "${GREEN}${BOLD}==========================================================================="
+echo "  ✓ Setup erfolgreich abgeschlossen!"
+echo "===========================================================================${NC}"
 
 echo ""
-echo -e "Deine Vorlage wurde personalisiert und ist bereit zur Verwendung."
-echo -e "Ein Backup der Originaldatei befindet sich in: ${BOLD}${MAIN_TEX}.backup${NC}"
+echo -e "Dein neues Projekt wurde erstellt: ${BOLD}${PROJECT_DIR}/${NC}"
 echo ""
 echo -e "${YELLOW}Nächste Schritte:${NC}"
-echo -e "  1. Kompiliere main.tex mit pdflatex/xelatex"
-echo -e "  2. Führe biber aus für die Literaturverweise"
-echo -e "  3. Kompiliere erneut für das finale PDF"
+echo -e "  1. Wechsle ins Projekt-Verzeichnis: ${BOLD}cd $PROJECT_DIR${NC}"
+echo -e "  2. Kompiliere main.tex mit pdflatex/xelatex"
+echo -e "  3. Führe biber aus für die Literaturverweise"
+echo -e "  4. Kompiliere erneut für das finale PDF"
+echo ""
+echo -e "${BLUE}Für weitere Projekte führe dieses Script einfach erneut aus!${NC}"
+echo -e "${BLUE}Deine Eingaben wurden in ${CACHE_FILE} gespeichert.${NC}"
 echo ""
 
-# =============================================================================
-# Self-Removal (only if all placeholders were replaced)
-# =============================================================================
-
-if [ "$ALL_REPLACED" = true ]; then
-    echo -e "${YELLOW}${BOLD}Alle Platzhalter wurden ersetzt.${NC}"
-    read -p "Möchtest du dieses Skript entfernen? (y)/n: " confirm
-
-    if [[ "$confirm" =~ ^[jJyY]$ ]] || [[ -z "$confirm" ]]; then
-        echo ""
-        print_step "Lösche $SCRIPT_NAME..."
-
-        # Remove the script
-        rm -- "$0"
-
-        echo -e "${GREEN}${BOLD}✓ Setup-Script wurde entfernt.${NC}"
-        echo ""
-        echo -e "Viel Erfolg mit deinem Protokoll!"
-        echo -e "${BLUE}Deine Eingaben wurden in ${CACHE_FILE} gespeichert.${NC}"
-    else
-        echo ""
-        print_info "Setup-Script wurde NICHT gelöscht."
-        echo -e "Du kannst es später manuell löschen: ${BOLD}rm $SCRIPT_NAME${NC}"
-    fi
-else
-    echo -e "${YELLOW}${BOLD}Setup-Script wird NICHT automatisch gelöscht.${NC}"
-    echo -e "Grund: Nicht alle Platzhalter wurden erfolgreich ersetzt."
-    echo ""
-    print_info "Bitte überprüfe $MAIN_TEX und führe das Script erneut aus,"
-    echo -e "oder lösche es manuell: ${BOLD}rm $SCRIPT_NAME${NC}"
-fi
-
+# Get absolute path of created project directory
+PROJECT_ABS_PATH="$(cd "$PROJECT_DIR" && pwd)"
+echo -e "${BOLD}Absoluter Pfad:${NC} $PROJECT_ABS_PATH"
 echo ""

@@ -1,0 +1,23 @@
+# Cache file with user's previous input values
+.LatexLabworksTemplate.cache
+
+# Generated project directories (exclude template and docs)
+*/
+!LatexProjectTemplate/
+!.claude/
+!.git/
+LW*
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+*.pdf
