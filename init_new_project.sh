@@ -278,10 +278,6 @@ if [ -d "$PROJECT_DIR" ]; then
     fi
 fi
 
-echo ""
-print_info "Projekt-Verzeichnis wird sein: ${BOLD}$PROJECT_DIR${NC}"
-echo ""
-
 print_step "Schritt 3/8: Studiengang"
 ask_input "Dein Studiengang?" "studiengang" STUDIENGANG
 
@@ -289,17 +285,14 @@ print_step "Schritt 4/8: Hochschule und Fakultät"
 ask_input "Name der Hochschule und Fakultät?" "hochschule" HOCHSCHULE
 
 print_step "Schritt 5/8: Autoren"
-print_info "Gib die Namen aller Autoren ein (getrennt durch Komma)"
 ask_input "Autoren (z.B. Ezra Exam, Max Muster)?" "autoren" AUTOREN
 
 print_step "Schritt 6/8: Versuchsdatum"
-print_info "Format: dd.mm.yyyy (z.B. 10.11.2025)"
-ask_input "Datum der Versuchsdurchführung?" "versuchsdatum" VERSUCHSDATUM
+ask_input "Datum (dd.mm.yyyy) der Versuchsdurchführung?" "versuchsdatum" VERSUCHSDATUM
 
 print_step "Schritt 7/8: Abgabedatum"
-print_info "Format: dd.mm.yyyy (z.B. 24.11.2025)"
 SUGGESTED_ABGABEDATUM=$(add_14_days "$VERSUCHSDATUM")
-ask_input_with_default "Abgabedatum des Protokolls?" "$SUGGESTED_ABGABEDATUM" ABGABEDATUM
+ask_input_with_default "Abgabedatum (dd.mm.yyyy) des Protokolls?" "$SUGGESTED_ABGABEDATUM" ABGABEDATUM
 
 print_step "Schritt 8/8: Betreuer"
 ask_input "Name(n) der Versuchsbetreuer?" "betreuer" BETREUER
@@ -367,10 +360,19 @@ echo ""
 echo -e "Dein neues Projekt wurde erstellt: ${BOLD}${PROJECT_DIR}/${NC}"
 echo ""
 echo -e "${YELLOW}Nächste Schritte:${NC}"
-echo -e "  1. Wechsle ins Projekt-Verzeichnis: ${BOLD}cd $PROJECT_DIR${NC}"
-echo -e "  2. Kompiliere main.tex mit pdflatex/xelatex"
-echo -e "  3. Führe biber aus für die Literaturverweise"
-echo -e "  4. Kompiliere erneut für das finale PDF"
+echo -e "  ${BOLD}Empfehlung (Cloud):${NC} Lade das Verzeichnis ${BOLD}$PROJECT_DIR/${NC} auf ${BOLD}overleaf.com${NC} hoch"
+echo -e "  → Cloud Verfügbarkeit für gemeinsame Zusammenarbeit"
+echo -e "  → Unbegrenzte Kompilierressourcen mit deinem Uni-Login"
+echo ""
+echo -e "  ${BOLD}Alternativ (Lokal):${NC}"
+echo -e "  0. LaTeX-Distribution installieren (falls noch nicht vorhanden):"
+echo -e "     - Linux: sudo apt install texlive-full"
+echo -e "     - macOS: brew install --cask mactex"
+echo -e "     - Windows: https://miktex.org"
+echo -e "  1. cd $PROJECT_DIR"
+echo -e "  2. Kompilierung:"
+echo -e "     - Linux/macOS: pdflatex main.tex && biber main && pdflatex main.tex && pdflatex main.tex"
+echo -e "     - Windows CMD: pdflatex main.tex & biber main & pdflatex main.tex & pdflatex main.tex"
 echo ""
 echo -e "${BLUE}Für weitere Projekte führe dieses Script einfach erneut aus!${NC}"
 echo -e "${BLUE}Deine Eingaben wurden in ${CACHE_FILE} gespeichert.${NC}"
@@ -378,5 +380,5 @@ echo ""
 
 # Get absolute path of created project directory
 PROJECT_ABS_PATH="$(cd "$PROJECT_DIR" && pwd)"
-echo -e "${BOLD}Absoluter Pfad:${NC} $PROJECT_ABS_PATH"
+echo -e "${BOLD}Absoluter Projekt Pfad:${NC} $PROJECT_ABS_PATH"
 echo ""
