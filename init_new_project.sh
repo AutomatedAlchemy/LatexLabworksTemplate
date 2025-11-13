@@ -219,9 +219,9 @@ replace_in_file() {
 # Sanitize project title to create a valid directory name
 sanitize_dirname() {
     local input="$1"
-    # Only remove truly problematic characters: / \ : * ? " < > |
-    # Replace spaces with underscores
-    echo "$input" | sed 's/[\/\\:*?"<>|]//g' | sed 's/ /_/g'
+    # Replace all special characters (including periods) with underscores
+    # Keep only alphanumeric characters (a-zA-Z0-9) and replace everything else with _
+    echo "$input" | sed 's/[^a-zA-Z0-9]/_/g'
 }
 
 # =============================================================================
