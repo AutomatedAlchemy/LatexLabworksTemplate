@@ -2,68 +2,56 @@
 % ==     ALLGEMEINE VORLAGE FÜR WISSENSCHAFTLICHE PROTOKOLLE                 ==
 % =============================================================================
 
-\documentclass[a4paper,12pt,ngerman]{article}
+% OPTIMIERUNG: KOMA-Script (scrartcl) statt article
+% Bessere Typografie für europäische Dokumente und A4
+\documentclass[
+  paper=a4,
+  fontsize=12pt,
+  ngerman,
+  parskip=half,      % Erzeugt sauberen Abstand zwischen Absätzen (kein Einrücken)
+  listof=totoc,      % Abbildungs-/Tabellenverzeichnis im Inhaltsverzeichnis
+  bibliography=totoc % Literaturverzeichnis im Inhaltsverzeichnis
+]{scrartcl}
 
 % =============================================================================
-% == METADATEN DES DOKUMENTS (HIER FÜR NEUEN VERSUCH ANPASSEN)               ==
+% == METADATEN (HIER ANPASSEN)                                               ==
 % =============================================================================
 
-% --- Allgemeine Informationen ---
 \newcommand{\Titel}{[Titel des Versuchs]}
 \newcommand{\Untertitel}{Versuchsprotokoll}
 \newcommand{\Kurs}{[Name des Kurses oder Praktikums]}
 \newcommand{\Studiengang}{[Ihr Studiengang]}
-\newcommand{\Hochschule}{[Name der Hochschule und Fakultät]}
-
-% --- Autoren ---
-\newcommand{\Autoren}{[Name 1], [Name 2], [Name 3]}
-
-% --- Termine und Betreuung ---
+\newcommand{\Hochschule}{[Name der Hochschule]}
+\newcommand{\Autoren}{[Name 1], [Name 2]}
 \newcommand{\Versuchsdatum}{TT. Monat JJJJ}
 \newcommand{\Abgabedatum}{TT. Monat JJJJ}
 \newcommand{\Betreuer}{[Name des Betreuers]}
 
-
 % =============================================================================
-% == PAKETE UND EINSTELLUNGEN (Normalerweise keine Änderung nötig)           ==
+% == PAKETE UND EINSTELLUNGEN                                                ==
 % =============================================================================
 
-% -----------------------------------------------------------------------------
-% -- Sprach- und Zeichenkodierung
-% -----------------------------------------------------------------------------
+% --- Sprache & Encoding ---
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[ngerman]{babel}
 \usepackage{csquotes}
 
-% -----------------------------------------------------------------------------
-% -- Schriftart und Seitenlayout
-% -----------------------------------------------------------------------------
+% --- Schriftart & Layout ---
 \usepackage{lmodern}
-\usepackage[a4paper, top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm]{geometry}
-\usepackage{setspace}
-\onehalfspacing
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{1.5ex}
+\usepackage[top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm]{geometry}
+\usepackage[onehalfspacing]{setspace} % Zeilenabstand 1.5
 
-% -----------------------------------------------------------------------------
-% -- Typografie
-% -----------------------------------------------------------------------------
-\usepackage{microtype}
+% --- Typografie ---
+\usepackage{microtype} % Verhindert "löchrigen" Textblocksatz
 
-% -----------------------------------------------------------------------------
-% -- Tabellen
-% -----------------------------------------------------------------------------
-\usepackage{booktabs}
+% --- Tabellen ---
+\usepackage{booktabs} % Für professionelle Linien (toprule, midrule...)
 \usepackage{tabularx}
-\usepackage{placeins}
-\usepackage{makecell}
-\renewcommand\cellalign{tl}
-\renewcommand{\arraystretch}{1.3}
+\usepackage{placeins} % \FloatBarrier Befehl
+\renewcommand{\arraystretch}{1.2} % Tabellen etwas luftiger gestalten
 
-% -----------------------------------------------------------------------------
-% -- Mathematik, Physik, Chemie und Einheiten
-% -----------------------------------------------------------------------------
+% --- Mathe & Naturwissenschaften ---
 \usepackage{amsmath}
 \usepackage{physics}
 \usepackage[version=4]{mhchem}
@@ -71,214 +59,197 @@
 \sisetup{
   locale = DE,
   detect-all,
-  round-mode = places,
-  round-precision = 2
+  per-mode = symbol,
+  uncertainty-mode = separate % Ausgabe: (1.23 +/- 0.05) statt 1.23(5)
 }
 
-% -----------------------------------------------------------------------------
-% -- Abbildungen und Gleitobjekte
-% -----------------------------------------------------------------------------
+% --- Bilder & Grafiken ---
 \usepackage{graphicx}
 \usepackage{float}
-\usepackage{caption}
+\usepackage[format=plain, labelfont={bf,sf}, textfont=small]{caption}
 \usepackage{subcaption}
-\captionsetup{font=small, labelfont=bf, singlelinecheck=false, format=hang}
-\addto\captionsngerman{\renewcommand{\figurename}{Abb.}}
-\addto\captionsngerman{\renewcommand{\tablename}{Tab.}}
 \graphicspath{{Abbildungen/}}
 
-% -----------------------------------------------------------------------------
-% -- Hyperlinks und PDF-Erstellung
-% -----------------------------------------------------------------------------
-\usepackage{hyperref}
-\hypersetup{
-  pdftitle={\Titel},
-  pdfauthor={\Autoren},
-  pdfsubject={\Untertitel},
-  pdfcreator={LatexLabworksTemplate - github.com/Probst1nator/LatexLabworksTemplate},
-  colorlinks=true,
-  linkcolor=black,
-  citecolor=blue,
-  urlcolor=blue,
-  breaklinks=true,
-  hidelinks
+% --- Quellcode (Listings) ---
+\usepackage{listings}
+\usepackage{xcolor}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codeblue}{rgb}{0.0,0.0,0.6}
+\lstset{
+    basicstyle=\ttfamily\small,
+    commentstyle=\color{codegray},
+    keywordstyle=\color{codeblue},
+    numbers=left,
+    numberstyle=\tiny\color{codegray},
+    breaklines=true,
+    frame=single,
+    captionpos=b,
+    keepspaces=true
 }
 
-% -----------------------------------------------------------------------------
-% -- Abkürzungsverzeichnis
-% -----------------------------------------------------------------------------
-\usepackage{acro}
-%
-% Fügen Sie hier Ihre eigenen Akronyme nach dem folgenden Schema hinzu:
-% \DeclareAcronym{<label>}{ short = <Kurzform>, long = <Langform> }
-% Beispiel:
-% \DeclareAcronym{fau}{ short = FAU, long = Friedrich-Alexander-Universität }
-%
+% --- Todos (Hilfreich beim Schreiben) ---
+% Nutze \todo{Notiz} im Text für Randnotizen.
+% Vor der Abgabe: Setze die Option 'disable' in die eckigen Klammern unten.
+\usepackage[colorinlistoftodos, prependcaption, textsize=tiny]{todonotes}
 
-% -----------------------------------------------------------------------------
-% -- Literaturverzeichnis mit BibLaTeX
-% -----------------------------------------------------------------------------
+% --- Referenzen & Links ---
 \usepackage[
-  backend=biber,
-  style=numeric,
-  sorting=none,
-  natbib=true
-]{biblatex}
-\addbibresource{quellen.bib} % Name der .bib-Datei
+  pdftitle={\Titel},
+  pdfauthor={\Autoren},
+  hidelinks,       % Keine roten Rahmen um Links
+  colorlinks=true, % Text farbig statt Rahmen
+  linkcolor=black, % Inhaltsverzeichnis schwarz lassen
+  citecolor=darkgray,
+  urlcolor=blue
+]{hyperref}
+
+% --- Intelligente Referenzen (Cleveref) ---
+% Immer NACH hyperref laden!
+% Erlaubt \cref{fig:bild} -> Ausgabe "Abb. 1" automatisch
+\usepackage[ngerman]{cleveref}
+
+% --- Abkürzungen ---
+\usepackage{acro}
+% Beispiel: \DeclareAcronym{led}{short=LED, long=Light Emitting Diode}
+
+% --- Literatur ---
+\usepackage[backend=biber, style=numeric, sorting=none]{biblatex}
+\addbibresource{quellen.bib}
 
 
 % =============================================================================
-% ==                          DOKUMENTBEGINN                                 ==
+% == DOKUMENTBEGINN                                                          ==
 % =============================================================================
 \begin{document}
 
-% -----------------------------------------------------------------------------
-% -- Deckblatt
-% -----------------------------------------------------------------------------
+% --- Deckblatt ---
 \begin{titlepage}
-  \begin{flushleft}
-    % Fügen Sie hier bei Bedarf ein Logo ein, z.B.:
-    % \includegraphics[width=8cm]{logo.png}
-  \end{flushleft}
-
-  \vspace{2cm}
-
-  \begin{center}
-    {\large\bfseries \Kurs\par}
+    \centering
+    \vspace*{1cm}
+    {\scshape\LARGE \Hochschule \par}
+    \vspace{1cm}
+    {\scshape\Large \Kurs \par}
     \vspace{1.5cm}
-    {\huge\bfseries \Titel\par}
-    \vspace{2cm}
-    {\Large\bfseries \Untertitel\par}
-
-    \vspace{1cm}
-
-    {\normalsize
-    An der\\
-    \Hochschule
-    }
-    
-    \vspace{1cm}
-    
-    {\normalsize \Studiengang\\}
-
-    \vspace{2cm}
-
-    {\normalsize vorgelegt von\\
+    {\huge\bfseries \Titel \par}
     \vspace{0.5cm}
-    {\large \Autoren}\\
-    }
-
-    \vfill % Schiebt den unteren Teil an das Seitenende
-
-    {\normalsize
-    Versuchsdurchführung: \Versuchsdatum\\
-    Abgabedatum: \Abgabedatum
-    }
+    {\Large\bfseries \Untertitel \par}
     
+    \vspace{2cm}
+    
+    {\Large \Autoren \par}
+    
+    \vfill
+    
+    % Tabelle für saubere Ausrichtung der Metadaten
+    \begin{tabular}{rl}
+        \textbf{Betreuer:} & \Betreuer \\
+        \textbf{Durchführung:} & \Versuchsdatum \\
+        \textbf{Abgabe:} & \Abgabedatum
+    \end{tabular}
     \vspace{1cm}
-    
-    {\normalsize Versuchsbetreuer: \Betreuer}
-  \end{center}
 \end{titlepage}
-\pagenumbering{gobble}
 
-% -----------------------------------------------------------------------------
-% -- Verzeichnisse
-% -----------------------------------------------------------------------------
-\newpage
-\cleardoublepage
+% --- Verzeichnisse ---
 \pagenumbering{Roman}
+
 \tableofcontents
-\thispagestyle{plain}
-
-\newpage
 \listoffigures
-\addcontentsline{toc}{section}{Abbildungsverzeichnis}
-\vspace{2em}
 \listoftables
-\addcontentsline{toc}{section}{Tabellenverzeichnis}
-
-\newpage
 \printacronyms[name=Abkürzungsverzeichnis]
-\addcontentsline{toc}{section}{Abkürzungsverzeichnis}
+
 \clearpage
 \pagenumbering{arabic}
 
 % =============================================================================
-% ==                         HAUPTTEIL DES PROTOKOLLS                        ==
+% == INHALT                                                                  ==
 % =============================================================================
+
 \section{Einleitung}
 %
-% Fügen Sie hier Ihren Einleitungstext ein.
-% Leiten Sie das Thema des Versuchs her.
-% Erklären Sie die Motivation und die Relevanz des Themas.
-% Formulieren Sie die genaue Zielsetzung bzw. die Forschungsfrage des Versuchs.
+% Füge hier deinen Einleitungstext ein.
+% 1. Leite das Thema des Versuchs her.
+% 2. Erkläre die Motivation und die Relevanz des Themas.
+% 3. Formuliere die genaue Zielsetzung bzw. die Forschungsfrage.
+%
+% TIPP: Nutze \todo{Hier fehlt noch Text} um dir Notizen im PDF zu machen.
 %
 
 \clearpage
 \section{Grundlagen}
 %
-% Fügen Sie hier die theoretischen Grundlagen ein.
-% Erläutern Sie die physikalischen, chemischen oder technischen Prinzipien,
-% die für das Verständnis des Versuchs notwendig sind.
-% Leiten Sie relevante Formeln her und erklären Sie die darin vorkommenden Größen.
-% Jede nicht-triviale Aussage sollte mit einer Quelle belegt werden, z.B. \cite{IhreQuelle}.
+% Füge hier die theoretischen Grundlagen ein.
+% - Erläutere die physikalischen/chemischen/technischen Prinzipien.
+% - Leite relevante Formeln her und erkläre die Größen.
+% - Belege Aussagen mit Quellen, z.B. \cite{DeineQuelle}.
 %
+% TIPP ZU REFERENZEN:
+% Nutze den Befehl \cref{labelname} statt "Abbildung \ref{...}".
+% Beispiel: "Wie in \cref{eq:einstein} zu sehen ist..."
+%
+\begin{equation}
+    E = mc^2
+    \label{eq:einstein}
+\end{equation}
 
 \clearpage
 \section{Durchführung}
 %
-% Beschreiben Sie hier den Versuchsaufbau und den Ablauf.
-% Schreiben Sie im Präteritum und in einer sachlichen, unpersönlichen Form.
-% Nennen Sie alle verwendeten Geräte, Materialien und Chemikalien.
-% Beschreiben Sie die durchgeführten Schritte so präzise, dass der Versuch
-% von einer anderen Person reproduziert werden könnte.
+% Beschreibe hier den Versuchsaufbau und den Ablauf.
+% - Schreibe im Präteritum und unpersönlich ("Wurde gemessen" statt "Ich habe gemessen").
+% - Nenne verwendete Geräte und Materialien.
+% - Falls du Code verwendet hast, nutze die lstlisting-Umgebung (siehe unten).
 %
+
+% Beispiel für Code-Einbindung:
+% \begin{lstlisting}[language=Python, caption={Messscript}, label={code:py}]
+% def start():
+%     return True
+% \end{lstlisting}
 
 \clearpage
 \section{Ergebnisse und Diskussion}
 %
-% Präsentieren und diskutieren Sie hier Ihre Messergebnisse.
+% Präsentiere und diskutiere hier deine Messergebnisse.
 %
-% 1. Präsentation der Ergebnisse:
-%    - Stellen Sie Ihre Daten übersichtlich in Form von Diagrammen, Abbildungen
-%      oder Tabellen dar.
-%    - Jede Abbildung und Tabelle benötigt eine nummerierte Beschriftung.
-%    - Beschreiben Sie objektiv, was in den Daten zu sehen ist.
+% 1. Präsentation:
+%    - Diagramme, Abbildungen oder Tabellen.
+%    - Jede Abbildung braucht eine Beschriftung (caption) und ein Label.
+%    - Beschreibe objektiv, was zu sehen ist.
 %
-% 2. Diskussion der Ergebnisse:
-%    - Interpretieren Sie Ihre Beobachtungen.
-%    - Setzen Sie die Ergebnisse in den Kontext der theoretischen Grundlagen.
-%    - Vergleichen Sie Ihre Ergebnisse mit Literaturwerten, falls vorhanden.
-%    - Diskutieren Sie mögliche Fehlerquellen, Messunsicherheiten und deren
-%      Einfluss auf die Ergebnisse.
+% 2. Diskussion:
+%    - Interpretiere deine Beobachtungen.
+%    - Vergleiche mit Literaturwerten.
+%    - Diskutiere Fehlerquellen und Unsicherheiten (Fehlerrechnung!).
 %
+
+% Beispielplatzhalter für ein Bild:
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.8\textwidth]{DeinBild.png}
+%     \caption{Beschriftung des Bildes}
+%     \label{fig:messung1}
+% \end{figure}
 
 \clearpage
 \section{Zusammenfassung}
 %
-% Fassen Sie die wichtigsten Ergebnisse und Schlussfolgerungen des Versuchs
-% kurz und prägnant zusammen.
-% Beantworten Sie die in der Einleitung formulierte Zielsetzung.
-% Geben Sie gegebenenfalls einen kurzen Ausblick.
+% Fasse die wichtigsten Ergebnisse kurz zusammen.
+% - Wurde das Ziel erreicht?
+% - Gib einen kurzen Ausblick.
 %
 
 % =============================================================================
-% ==                ABSCHLUSS: QUELLENVERZEICHNIS & ANHANG                   ==
+% == ANHANG & QUELLEN                                                        ==
 % =============================================================================
 \clearpage
-\printbibliography[heading=bibintoc, title={Quellenverzeichnis}]
+\printbibliography
 
 \clearpage
 \appendix
 \section{Anhang}
 \label{sec:Anhang}
 %
-% Fügen Sie hier bei Bedarf zusätzliches Material ein, z.B.:
-% - Rohdatentabellen
-% - Zusätzliche Diagramme oder Abbildungen
-% - Detaillierte Berechnungen
-% - Sicherheitshinweise
+% Hier Platz für Rohdaten, zusätzliche Plots oder Herleitungen.
 %
 
 \end{document}
