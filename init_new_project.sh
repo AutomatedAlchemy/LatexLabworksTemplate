@@ -264,18 +264,53 @@ fi
 
 # Check if directory already exists
 if [ -d "$PROJECT_DIR" ]; then
-    print_error "Verzeichnis '$PROJECT_DIR' existiert bereits!"
-    read -p "Möchtest du einen anderen Namen verwenden? (y/n): " confirm
-    if [[ "$confirm" =~ ^[jJyY]$ ]]; then
-        read -p "Neuer Verzeichnisname: " PROJECT_DIR
-        while [ -d "$PROJECT_DIR" ] || [ -z "$PROJECT_DIR" ]; do
-            print_error "Ungültiger oder bereits existierender Name!"
-            read -p "Verzeichnisname: " PROJECT_DIR
-        done
-    else
-        print_error "Abbruch."
-        exit 1
-    fi
+    while true; do
+        print_error "Verzeichnis '$PROJECT_DIR' existiert bereits!"
+        read -p "Möchtest du einen anderen Namen verwenden? (y/n): " confirm
+
+        # If empty input, re-ask
+        if [ -z "$confirm" ]; then
+            continue
+        fi
+
+        # If yes, ask for new directory name
+        if [[ "$confirm" =~ ^[jJyY]$ ]]; then
+            read -p "Neuer Verzeichnisname: " PROJECT_DIR
+            while [ -d "$PROJECT_DIR" ] || [ -z "$PROJECT_DIR" ]; do
+                print_error "Ungültiger oder bereits existierender Name!"
+                read -p "Verzeichnisname: " PROJECT_DIR
+            done
+            break
+        # If no, ask for confirmation to delete
+        elif [[ "$confirm" =~ ^[nN]$ ]]; then
+            echo ""
+            print_warning "Dies löscht das existierende Verzeichnis und ZIP-Archiv!"
+            read -p "Möchtest du wirklich '$PROJECT_DIR' und '${PROJECT_DIR}.zip' löschen? (y/N): " delete_confirm
+
+            # Default to N if empty
+            if [ -z "$delete_confirm" ]; then
+                delete_confirm="N"
+            fi
+
+            if [[ "$delete_confirm" =~ ^[jJyY]$ ]]; then
+                # Delete directory and zip file
+                rm -rf "$PROJECT_DIR"
+                [ -f "${PROJECT_DIR}.zip" ] && rm -f "${PROJECT_DIR}.zip"
+                print_success "Verzeichnis und ZIP-Archiv gelöscht"
+                break
+            else
+                print_info "Abbruch. Bitte verwende einen anderen Namen."
+                read -p "Neuer Verzeichnisname: " PROJECT_DIR
+                while [ -d "$PROJECT_DIR" ] || [ -z "$PROJECT_DIR" ]; do
+                    print_error "Ungültiger oder bereits existierender Name!"
+                    read -p "Verzeichnisname: " PROJECT_DIR
+                done
+                break
+            fi
+        else
+            print_error "Ungültige Eingabe. Bitte 'y' oder 'n' eingeben."
+        fi
+    done
 fi
 
 print_step "Schritt 3/8: Studiengang"
@@ -348,6 +383,28 @@ fi
 replace_in_file "[Name des Betreuers]" "$BETREUER" "$MAIN_TEX" && print_success "Betreuer ersetzt"
 
 # =============================================================================
+# Create ZIP Archive
+# =============================================================================
+
+echo ""
+print_step "Erstelle ZIP-Archiv des Projekts..."
+
+ZIP_FILE="${PROJECT_DIR}.zip"
+
+# Check if zip command is available
+if ! command -v zip &> /dev/null; then
+    print_warning "zip-Befehl nicht gefunden. ZIP-Archiv wird nicht erstellt."
+    print_info "Installiere zip mit: sudo apt install zip (Linux) oder brew install zip (macOS)"
+else
+    # Create zip file
+    if zip -r "$ZIP_FILE" "$PROJECT_DIR" > /dev/null 2>&1; then
+        print_success "ZIP-Archiv erstellt: $ZIP_FILE"
+    else
+        print_warning "Fehler beim Erstellen des ZIP-Archivs"
+    fi
+fi
+
+# =============================================================================
 # Completion
 # =============================================================================
 
@@ -358,9 +415,12 @@ echo "==========================================================================
 
 echo ""
 echo -e "Dein neues Projekt wurde erstellt: ${BOLD}${PROJECT_DIR}/${NC}"
+if [ -f "$ZIP_FILE" ]; then
+    echo -e "ZIP-Archiv: ${BOLD}${ZIP_FILE}${NC}"
+fi
 echo ""
 echo -e "${YELLOW}Nächste Schritte:${NC}"
-echo -e "  ${BOLD}Empfehlung (Cloud):${NC} Lade das Verzeichnis ${BOLD}$PROJECT_DIR/${NC} auf ${BOLD}overleaf.com${NC} hoch"
+echo -e "  ${BOLD}Empfehlung (Cloud):${NC} Lade ${BOLD}$ZIP_FILE${NC} auf ${BOLD}overleaf.com${NC} hoch"
 echo -e "  → Cloud Verfügbarkeit für gemeinsame Zusammenarbeit"
 echo -e "  → Unbegrenzte Kompilierressourcen mit deinem Uni-Login"
 echo ""
