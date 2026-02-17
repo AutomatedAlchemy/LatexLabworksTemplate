@@ -4,6 +4,9 @@ Eine strukturierte LaTeX-Vorlage für wissenschaftliche Labor-Protokolle inklusi
 
 ## Schnellstart
 
+0. Kompatibilität
+    Dieses Tool wurde primär unter Linux (speziell Kubuntu) entwickelt und erfolgreich getestet. Da das Setup-Skript auf Standard-Unix-Utilities (bash, sed, grep) basiert, sollte es auf den meisten Linux-Distributionen und macOS problemlos funktionieren. Eine native Unterstützung für Windows (CMD/PowerShell) ist nicht gegeben; hier besteht die Alternative der Nutzung via WSL (Windows Subsystem for Linux).
+
 1.  **Repository klonen und Skript ausführbar machen:**
     ```bash
     git clone https://github.com/Probst1nator/LatexLabworksTemplate
@@ -44,4 +47,3 @@ Eine strukturierte LaTeX-Vorlage für wissenschaftliche Labor-Protokolle inklusi
 ## Anforderungen
 
 *   **Skript:** Bash (sed, grep, date) und optional `zip`.
-*   **Kompilierung:** Eine LaTeX-Distribution (TeX Live, MiKTeX) oder ein Overleaf-Account.
