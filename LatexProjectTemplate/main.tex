@@ -1,5 +1,5 @@
 % =============================================================================
-% ==     ALLGEMEINE VORLAGE FÜR WISSENSCHAFTLICHE PROTOKOLLE                 ==
+% ==     VORLAGE FÜR WISSENSCHAFTLICHE PROTOKOLLE                            ==
 % =============================================================================
 
 % OPTIMIERUNG: KOMA-Script (scrartcl) statt article
@@ -26,6 +26,9 @@
 \newcommand{\Versuchsdatum}{TT. Monat JJJJ}
 \newcommand{\Abgabedatum}{TT. Monat JJJJ}
 \newcommand{\Betreuer}{[Name des Betreuers]}
+
+% Dateiname des Logos (Muss im Ordner 'Abbildungen' liegen)
+\newcommand{\LogoDatei}{Abbildungen/logo.png} 
 
 % =============================================================================
 % == PAKETE UND EINSTELLUNGEN                                                ==
@@ -122,42 +125,66 @@
 % =============================================================================
 \begin{document}
 
-% --- Deckblatt ---
+% --- Deckblatt (Design exakt wie Version 2) ---
 \begin{titlepage}
-    \centering
-    \vspace*{1cm}
-    {\scshape\LARGE \Hochschule \par}
-    \vspace{1cm}
-    {\scshape\Large \Kurs \par}
+  \begin{flushleft}
+    % Fügen Sie hier bei Bedarf ein Logo ein, z.B.:
+    \includegraphics[width=8cm]{logo.png}
+  \end{flushleft}
+
+  \vspace{1cm}
+
+  \begin{center}
+    {\large\bfseries \Kurs\par}
     \vspace{1.5cm}
-    {\huge\bfseries \Titel \par}
-    \vspace{0.5cm}
-    {\Large\bfseries \Untertitel \par}
-    
+    {\huge\bfseries \Titel\par}
     \vspace{2cm}
-    
-    {\Large \Autoren \par}
-    
-    \vfill
-    
-    % Tabelle für saubere Ausrichtung der Metadaten
-    \begin{tabular}{rl}
-        \textbf{Betreuer:} & \Betreuer \\
-        \textbf{Durchführung:} & \Versuchsdatum \\
-        \textbf{Abgabe:} & \Abgabedatum
-    \end{tabular}
+    {\Large\bfseries \Untertitel\par}
+
     \vspace{1cm}
+
+    {\normalsize
+    An der\\
+    \Hochschule
+    }
+    
+    \vspace{1cm}
+    
+    {\normalsize \Studiengang\\}
+
+    \vspace{2cm}
+
+    {\normalsize vorgelegt von\\
+    \vspace{0.5cm}
+    {\large \Autoren}\\
+    }
+
+    \vfill % Schiebt den unteren Teil an das Seitenende
+
+    {\normalsize
+    Versuchsdurchführung: \Versuchsdatum\\
+    Abgabedatum: \Abgabedatum
+    }
+    
+    \vspace{1cm}
+    
+    {\normalsize Versuchsbetreuer: \Betreuer}
+  \end{center}
 \end{titlepage}
+\pagenumbering{gobble}
 
-% --- Verzeichnisse ---
+\newpage
+\cleardoublepage
 \pagenumbering{Roman}
-
 \tableofcontents
-\listoffigures
-\listoftables
-\printacronyms[name=Abkürzungsverzeichnis]
+\thispagestyle{plain}
 
-\clearpage
+\newpage
+\listoffigures
+\vspace{2em}
+\listoftables
+
+\newpage
 \pagenumbering{arabic}
 
 % =============================================================================
@@ -207,19 +234,9 @@
 % \end{lstlisting}
 
 \clearpage
-\section{Ergebnisse und Diskussion}
+\section{Ergebnisse}
 %
-% Präsentiere und diskutiere hier deine Messergebnisse.
-%
-% 1. Präsentation:
-%    - Diagramme, Abbildungen oder Tabellen.
-%    - Jede Abbildung braucht eine Beschriftung (caption) und ein Label.
-%    - Beschreibe objektiv, was zu sehen ist.
-%
-% 2. Diskussion:
-%    - Interpretiere deine Beobachtungen.
-%    - Vergleiche mit Literaturwerten.
-%    - Diskutiere Fehlerquellen und Unsicherheiten (Fehlerrechnung!).
+% Präsentiere hier rein objektiv deine Messergebnisse (Tabellen, Bilder).
 %
 
 % Beispielplatzhalter für ein Bild:
@@ -229,6 +246,12 @@
 %     \caption{Beschriftung des Bildes}
 %     \label{fig:messung1}
 % \end{figure}
+
+\clearpage
+\section{Diskussion}
+%
+% Interpretiere hier deine Beobachtungen und vergleiche sie mit der Theorie.
+%
 
 \clearpage
 \section{Zusammenfassung}
@@ -244,12 +267,6 @@
 \clearpage
 \printbibliography
 
-\clearpage
-\appendix
-\section{Anhang}
-\label{sec:Anhang}
-%
-% Hier Platz für Rohdaten, zusätzliche Plots oder Herleitungen.
-%
+
 
 \end{document}
