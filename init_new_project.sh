@@ -216,6 +216,12 @@ replace_in_file() {
     return 0
 }
 
+# Shuffle comma-separated names into random order
+shuffle_names() {
+    local names="$1"
+    echo "$names" | tr ',' '\n' | sed 's/^ *//;s/ *$//' | shuf | paste -sd ', '
+}
+
 # Sanitize project title to create a valid directory name
 sanitize_dirname() {
     local input="$1"
@@ -365,7 +371,8 @@ replace_in_file "[Ihr Studiengang]" "$STUDIENGANG" "$MAIN_TEX" && print_success 
 
 replace_in_file "[Name der Hochschule und Fakultät]" "$HOCHSCHULE" "$MAIN_TEX" && print_success "Hochschule ersetzt"
 
-replace_in_file "[Name 1], [Name 2], [Name 3]" "$AUTOREN" "$MAIN_TEX" && print_success "Autoren ersetzt"
+AUTOREN=$(shuffle_names "$AUTOREN")
+replace_in_file "[Name 1], [Name 2], [Name 3]" "$AUTOREN" "$MAIN_TEX" && print_success "Autoren ersetzt (+Zufallssortierung)"
 
 # Replace both date placeholders individually (convert to German text format)
 if [ -n "$VERSUCHSDATUM" ]; then
